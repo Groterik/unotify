@@ -4,7 +4,7 @@ usage() { echo "Usage: $0 [-h] [-c] -m message "; }
 msg="<no-msg>"
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-declare -a CMDS=("macosx-notifier.sh")
+declare -a CMDS=("macosx-notifier.sh" "osd-notifier.sh")
 
 while getopts ":hcm:" o; do
   case "${o}" in

@@ -13,12 +13,12 @@ while getopts ":hcm:" o; do
       exit 0
       ;;
     c)
-      hash osascript &> /dev/null
+      hash notify-send &> /dev/null
       excode=$?
       if [ $excode -eq 0 ];then
-        echo "Mac OS X osascript notifier is available"
+        echo "Command notify-send is available"
       else
-        echo "Mac OS X osascript notifier is unavailable" 1>&2
+        echo "Command notify-send is unavailable" 1>&2
       fi
       exit $excode
       ;;
@@ -34,5 +34,5 @@ if [ "$msg" == "<no-msg>" ]; then
   exit 1
 fi
 
-osascript -e "display notification \"${msg/\"/\\\"}\" with title \"Notification\""
+notify-send "unotify" "${msg}"
 

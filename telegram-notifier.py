@@ -2,7 +2,10 @@ import sys
 import argparse
 import requests
 
-requests.packages.urllib3.disable_warnings()
+try:
+  requests.packages.urllib3.disable_warnings()
+except:
+  pass
 
 parser = argparse.ArgumentParser(prog='telegram-notifier')
 parser.add_argument('-u', '--user', required=True, help='bot token id')

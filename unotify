@@ -1,6 +1,6 @@
 #!/bin/bash
 
-usage() { echo "Usage: $0 [-h] [-c] -m message "; }
+usage() { echo "Usage: $0 [-h] [-c] [-stx] [-f config] -m message "; }
 msg="<no-msg>"
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
@@ -69,7 +69,7 @@ if [ "${chk}" == "true" ]; then
     echo $k
     eval "cmd=\$${k}_CMD"
     eval "args=\$${k}_ARGS"
-    eval "${cmd} ${args} -c"
+    eval "${cmd} ${args} -c -m Test"
     cmdcode=$?
     excode=$((excode || cmdcode))
   done
