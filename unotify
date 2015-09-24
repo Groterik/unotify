@@ -1,0 +1,95 @@
+#!/bin/bash
+
+usage() { echo "Usage: $0 [-h] [-c] -m message "; }
+msg="<no-msg>"
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+declare -a CMDS=()
+chk="false"
+
+config_dir="${HOME}/.config/unotify"
+config_file="${config_dir}/unotify.conf"
+
+while getopts ":hcstxm:f:" o; do
+  case "${o}" in
+    m)
+      msg=${OPTARG}
+      ;;
+    f)
+      config_file=${OPTARG}
+      ;;
+    h)
+      usage
+      exit 0
+      ;;
+    c)
+      chk="true"
+      ;;
+    s)
+      CMDS+=("screen")
+      screen_CMD="${DIR}/screen-notifier.sh"
+      ;;
+    t)
+      CMDS+=("telegram")
+      telegram_CMD="python ${DIR}/telegram-notifier.py"
+      ;;
+    x)
+      CMDS+=("xmpp")
+      xmpp_CMD="python ${DIR}/xmpp-notifier.py"
+      ;;
+    *)
+      usage 1>&2
+      exit 1
+      ;;
+  esac
+done
+
+if [ ! -f "${config_file}" ]; then
+  echo "${config_file} not exist" 1>&2
+  exit 2
+fi
+IFS="="
+while read -r lhs rhs
+do
+  if [[ ! $lhs =~ ^\ *# && -n $lhs ]]; then
+    k="${lhs%%:*}" # Extract key
+    arg="${lhs#*:}"
+    rhs="${rhs%%\#*}"    # Del in line right comments
+    rhs="${rhs%%*( )}"   # Del trailing spaces
+    rhs="${rhs%\"*}"     # Del opening string quotes 
+    rhs="${rhs#\"*}"     # Del closing string quotes 
+    eval "${k}_ARGS=""\"\$${k}_ARGS --$arg $rhs\""
+  fi
+done < "${config_file}"
+
+if [ "${chk}" == "true" ]; then
+  excode=0
+  for k in "${CMDS[@]}"
+  do
+    echo $k
+    eval "cmd=\$${k}_CMD"
+    eval "args=\$${k}_ARGS"
+    eval "${cmd} ${args} -c"
+    cmdcode=$?
+    excode=$((excode || cmdcode))
+  done
+  exit $excode
+fi
+
+if [ "$msg" == "<no-msg>" ]; then
+  usage 1>&2
+  exit 1
+fi
+
+excode=0
+for k in "${CMDS[@]}"
+do
+  eval "cmd=\$${k}_CMD"
+  eval "args=\$${k}_ARGS"
+  eval "${cmd} ${args} -m ${msg}"
+  cmdcode=$?
+  excode=$((excode || cmdcode))
+done
+
+exit $excode
+
