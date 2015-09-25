@@ -86,7 +86,7 @@ for k in "${CMDS[@]}"
 do
   eval "cmd=\$${k}_CMD"
   eval "args=\$${k}_ARGS"
-  eval "${cmd} ${args} -m ${msg}"
+  eval "${cmd} ${args} -m \"${msg}\""
   cmdcode=$?
   excode=$((excode || cmdcode))
 done
