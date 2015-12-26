@@ -1,6 +1,6 @@
 #!/bin/bash
 
-usage() { echo "Usage: $0 [-h] [-c] [-stx] [-f config] -m message "; }
+usage() { echo "Usage: $0 [-h] [-c] [-stxe] [-f config] -m message "; }
 msg="<no-msg>"
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
@@ -10,7 +10,7 @@ chk="false"
 config_dir="${HOME}/.config/unotify"
 config_file="${config_dir}/unotify.conf"
 
-while getopts ":hcstxm:f:" o; do
+while getopts ":hcstxerm:f:" o; do
   case "${o}" in
     m)
       msg=${OPTARG}
@@ -36,6 +36,10 @@ while getopts ":hcstxm:f:" o; do
     x)
       CMDS+=("xmpp")
       xmpp_CMD="python ${DIR}/xmpp-notifier.py"
+      ;;
+    e)
+      CMDS+=("email")
+      email_CMD="python ${DIR}/email-notifier.py"
       ;;
     *)
       usage 1>&2

@@ -12,7 +12,8 @@ parser.add_argument('-u', '--user', required=True, help='bot token id')
 parser.add_argument('-t', '--to', required=True, help='target chat id')
 parser.add_argument('-m', '--message', required=True, help='message text')
 parser.add_argument('-c', '--check', action="store_true", help='check token')
-parser.add_argument('-p', '--print-updates', action="store_true", help='fetch and print incoming bot updates')
+parser.add_argument('-p', '--print-updates', action="store_true", 
+                    help='fetch and print incoming bot updates')
 args = parser.parse_args()
 
 token = args.user
